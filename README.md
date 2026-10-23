@@ -19,6 +19,8 @@ Ce que contient le dépôt :
 | `check.sh` | Vérifie la chaîne Lambda → HA et liste les appareils que HA exposera |
 | `test.sh` | Tests du relais |
 | `outils/menage-alexa.js` | Vide d'un coup les appareils de l'app Alexa (étape 8) |
+| `outils/renommer-alexa.js` | Renomme les Echo et Fire TV selon la même convention (étape 8) |
+| `outils/groupes-alexa.js` | Crée un groupe Alexa par pièce d'après les noms « Pièce - Objet » (étape 8) |
 | `.env.example` | Modèle de configuration locale (`.env`, jamais versionné) |
 
 ## Avant de commencer
@@ -190,10 +192,10 @@ Supprimez le jeton de HA et du `.env` une fois la vérification faite.
    1. connectez-vous sur amazon.fr, puis ouvrez https://alexa.amazon.fr/api/bootstrap (doit afficher
       `"authenticated":true`) ;
    2. console du navigateur (F12 → *Console* ; Chrome demande parfois de taper `allow pasting`),
-      collez le contenu du fichier : il affiche ce qu'il garde (Sonos, Echo) et ce qu'il supprimera,
-      sans rien toucher ;
+      collez le contenu du fichier : il affiche ce qu'il garde (Echo, Sonos, appareils de HA) et ce
+      qu'il supprimera, sans rien toucher ;
    3. `await menage({ simulation: false })` supprime. Autre liste à garder :
-      `await menage({ simulation: false, garder: /sonos|amazon|echo|ikea/i })`.
+      `await menage({ simulation: false, garder: /sonos|amazon|echo|home assistant|ikea/i })`.
 
    L'API est celle de l'ancienne interface web d'Alexa, non officielle : elle peut changer. Un appareil
    qui revient après une découverte passe par Matter ou par la découverte locale de l'Echo (pont Hue) :
@@ -204,7 +206,11 @@ Supprimez le jeton de HA et du `.env` une fois la vérification faite.
 4. **Découvrir les appareils.**
 5. Créez un **groupe par pièce** (Salon…) contenant l'Echo de la pièce et ses appareils : « Alexa,
    éteins la lumière » vise alors la pièce où vous parlez. Les pièces de HA ne remontent pas dans
-   Alexa, c'est la seule chose à faire de ce côté.
+   Alexa. Si vos noms suivent la forme « Pièce - Objet » dans HA (et pour les Echo, renommés de même
+   avec [`outils/renommer-alexa.js`](outils/renommer-alexa.js)), [`outils/groupes-alexa.js`](outils/groupes-alexa.js) crée les groupes d'un coup, de
+   la même façon que le ménage : simulation, puis `await groupes({ simulation: false })`. Il se
+   relance après un renommage ou un déménagement : chaque groupe reçoit exactement les appareils
+   dont le nom commence par sa pièce.
 
 ## En cas de problème
 

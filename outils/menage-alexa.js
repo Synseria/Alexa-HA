@@ -1,8 +1,9 @@
 // Supprime d'un coup les appareils maison de l'app Alexa (qui n'offre que la suppression un par un).
 // API web non officielle d'Alexa : à coller dans la console du navigateur, sur https://alexa.amazon.fr/api/bootstrap
 // une fois connecté à amazon.fr (mode d'emploi : README, étape 8). Sans argument, simule seulement.
+// Garde par défaut les Echo, Sonos et ce que la skill HA expose : le ménage peut se relancer sans casser la skill.
 
-async function menage({ simulation = true, garder = /sonos|amazon|echo/i } = {}) {
+async function menage({ simulation = true, garder = /sonos|amazon|echo|home assistant/i } = {}) {
   await fetch('/api/language', { credentials: 'include' });
   const csrf = document.cookie.match(/(?:^|; )csrf=([^;]+)/)?.[1];
   if (!csrf) throw new Error('Pas de jeton csrf : connecte-toi sur amazon.fr puis recharge la page');
