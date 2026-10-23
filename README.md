@@ -18,6 +18,7 @@ Ce que contient le dépôt :
 | `deploy.sh` | Envoie le code et la configuration sur la Lambda |
 | `check.sh` | Vérifie la chaîne Lambda → HA et liste les appareils que HA exposera |
 | `test.sh` | Tests du relais |
+| `outils/menage-alexa.js` | Vide d'un coup les appareils de l'app Alexa (étape 8) |
 | `.env.example` | Modèle de configuration locale (`.env`, jamais versionné) |
 
 ## Avant de commencer
@@ -183,8 +184,20 @@ Supprimez le jeton de HA et du `.env` une fois la vérification faite.
 
 ## 8. Dans l'app Alexa
 
-1. *Facultatif, recommandé* : faites le ménage. *Appareils → Tous les appareils → crayon →* tout
-   sélectionner → *Supprimer*. Désactivez les skills qui feraient doublon avec HA (Hue, Tuya…).
+1. *Facultatif, recommandé* : faites le ménage. Désactivez les skills qui feraient doublon avec HA
+   (Hue, TV, Tuya…) : leurs appareils restent pourtant dans l'app, qui ne sait les supprimer qu'un par
+   un. Pour tout vider d'un coup, avec [`outils/menage-alexa.js`](outils/menage-alexa.js) :
+   1. connectez-vous sur amazon.fr, puis ouvrez https://alexa.amazon.fr/api/bootstrap (doit afficher
+      `"authenticated":true`) ;
+   2. console du navigateur (F12 → *Console* ; Chrome demande parfois de taper `allow pasting`),
+      collez le contenu du fichier : il affiche ce qu'il garde (Sonos, Echo) et ce qu'il supprimera,
+      sans rien toucher ;
+   3. `await menage({ simulation: false })` supprime. Autre liste à garder :
+      `await menage({ simulation: false, garder: /sonos|amazon|echo|ikea/i })`.
+
+   L'API est celle de l'ancienne interface web d'Alexa, non officielle : elle peut changer. Un appareil
+   qui revient après une découverte passe par Matter ou par la découverte locale de l'Echo (pont Hue) :
+   retirez Alexa dans l'app du fabricant (Hue : *Réglages → Matter*).
 2. *Plus → Skills et jeux → Vos skills → onglet* **Développeur** → votre skill → **Activer**.
 3. La page de connexion de HA s'ouvre : connectez-vous, idéalement avec un **utilisateur HA dédié**
    (« alexa », non administrateur).
