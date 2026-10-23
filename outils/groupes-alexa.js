@@ -1,5 +1,5 @@
 // Crée un groupe Alexa par pièce et y range chaque appareil d'après son nom : « Pièce - Objet » (convention des
-// noms HA, appliquée aussi aux Echo et aux pièces de l'app Sonos), précédé ou non du « [Sonos] » de la skill Sonos. Le groupe reçoit exactement ces appareils : relancer
+// noms HA, appliquée aussi aux Echo et aux pièces de l'app Sonos). Le groupe reçoit exactement ces appareils : relancer
 // après un renommage ou un déménagement suffit. API web non officielle d'Alexa : à coller dans la console du
 // navigateur, sur https://alexa.amazon.fr/api/bootstrap (README, étape 8). Sans argument, simule seulement.
 
@@ -20,9 +20,7 @@ async function groupes({ simulation = true } = {}) {
   const sansPiece = [];
   for (const { friendlyName: nom, legacyAppliance } of reponse.data.endpoints.items) {
     if (!legacyAppliance) continue;
-    // La skill Sonos préfixe le nom de la pièce Sonos : « [Sonos] Salon - Sonos », ou « [Sonos] Salon »
-    const sansPrefixe = nom.replace(/^\[Sonos\] /, '');
-    const piece = sansPrefixe.match(/^(.+?) - /)?.[1] ?? (sansPrefixe !== nom ? sansPrefixe : undefined);
+    const piece = nom.match(/^(.+?) - /)?.[1];
     if (!piece) { sansPiece.push(nom); continue; }
     if (!pieces.has(piece)) pieces.set(piece, []);
     pieces.get(piece).push({ nom, id: legacyAppliance.applianceId });
