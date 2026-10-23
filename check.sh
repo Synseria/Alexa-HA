@@ -5,7 +5,7 @@ set -eu
 cd "$(dirname "$0")"
 . ./.env
 export AWS_PROFILE AWS_REGION
-: "${HA_TOKEN:?HA_TOKEN manquant dans .env (HA : Profil → Sécurité → Jetons d'accès longue durée)}"
+: "${HA_TOKEN:?HA_TOKEN manquant dans .env (HA : Profil → Sécurité → Jetons d’accès longue durée)}"
 
 dossier=$(mktemp -d "${TMPDIR:-/tmp}/alexa-ha.XXXXXX")
 trap 'rm -rf "$dossier"' EXIT

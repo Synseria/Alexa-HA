@@ -16,8 +16,9 @@ aws lambda update-function-code --function-name "$FUNCTION_NAME" \
   --zip-file "fileb://$dossier/lambda.zip" --architectures arm64 >/dev/null
 aws lambda wait function-updated --function-name "$FUNCTION_NAME"
 
+# Le processeur suit la mémoire : à 128 Mo, le premier appel (TLS vers HA) coûte ~2,5 s de latence
 aws lambda update-function-configuration --function-name "$FUNCTION_NAME" \
-  --runtime nodejs24.x --handler index.handler --timeout 10 --memory-size 128 \
+  --runtime nodejs24.x --handler index.handler --timeout 10 --memory-size 1024 \
   --environment "Variables={HA_URL=$HA_URL}" >/dev/null
 aws lambda wait function-updated --function-name "$FUNCTION_NAME"
 
