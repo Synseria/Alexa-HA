@@ -196,6 +196,9 @@ Supprimez le jeton de HA et du `.env` une fois la vérification faite.
       qu'il supprimera, sans rien toucher ;
    3. `await menage({ simulation: false })` supprime. Autre liste à garder :
       `await menage({ simulation: false, garder: /sonos|amazon|echo|home assistant|ikea/i })`.
+      Une entité retirée du `filter` de HA reste dans Alexa (la skill n'envoie pas de suppression) :
+      `await menage({ simulation: false, cibles: /Lustre Gauche|Lustre Droit/ })` ne supprime que
+      les appareils dont le nom correspond.
 
    L'API est celle de l'ancienne interface web d'Alexa, non officielle : elle peut changer. Un appareil
    qui revient après une découverte passe par Matter ou par la découverte locale de l'Echo (pont Hue) :
